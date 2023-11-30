@@ -95,6 +95,18 @@ def print_results(company_data):
                     print(f"基本資料 (公司代號: {company_id}):")
                     print(table_basic)
 
+            # 計算每年度的平均值
+            yearly_data = {year: [] for year in range(year_range[0], year_range[1] + 1)}
+            for company in group:
+                year = int(company['月份'].split('-')[0])
+                yearly_data[year].append(float(company['當月營收'].replace(',', '')))
+
+            # 輸出每年度的平均值
+            print(f"每年度的平均當月營收:")
+            for year, revenues in yearly_data.items():
+                average_revenue = sum(revenues) / len(revenues)
+                print(f"{year}年: {average_revenue:.2f}")
+
             # 清空表格
             table_basic.clear_rows()
 
