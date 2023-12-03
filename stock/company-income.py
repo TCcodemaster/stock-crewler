@@ -85,12 +85,12 @@ layout = [
     [sg.Text('公司代號（以逗號分隔）'), sg.InputText(key='company_ids')],
     [sg.Text('年份範圍（以逗號分隔或使用範圍符號 "-"）'), sg.InputText(key='year_range')],
     [sg.Text('月份範圍（以逗號分隔或使用範圍符號 "-"）'), sg.InputText(key='month_range')],
-    [sg.Button('確認')],
+    [sg.Button('確認'),sg.Button('生成折線圖', key='plot_button'),sg.Button('離開', key='leave')],
     [sg.Table(values=[], headings=['公司代號', '公司名稱', '當月營收', '上月營收', '去年當月營收', '上月比較增減(%)', '去年同月增減(%)', '月份'],
               auto_size_columns=False, justification='right', key='table',
               col_widths=[15, 30, 15, 15, 15, 20, 20, 15],
               row_height=30, display_row_numbers=False, bind_return_key=True, enable_events=True, num_rows=20)],
-    [sg.Button('生成折線圖', key='plot_button')],
+    
 ]
 
 window = sg.Window('公司資料查詢工具', layout, resizable=True, finalize=True)
@@ -99,6 +99,8 @@ while True:
     event, values = window.read()
 
     if event == sg.WINDOW_CLOSED:
+        break
+    elif event == 'leave':
         break
     elif event == '確認':
         # Parsing input
@@ -151,31 +153,37 @@ while True:
         window['table'].update(values=table_data)
 
     elif event == 'plot_button':
-        plt.figure(figsize=(10, 6))
-        plot_data = {company_id: {'月份': [], '營收': []} for company_id in company_ids_input}
+        table_data = window['table'].get()
 
-        for company_id, group in groupby(sorted_data, key=lambda x: x['公司代號']):
-            group = list(group)
+        if table_data and table_data[0]:
+            plt.figure(figsize=(10, 6))
+            plot_data = {company_id: {'月份': [], '營收': []} for company_id in company_ids_input}
 
-            for i, company in enumerate(group):
-                # 計算每年度的平均值
-                year = int(company['月份'].split('-')[0])
-                month = int(company['月份'].split('-')[1])
-                plot_data[company_id]['月份'].extend([f"{year}-{month:02d}"])
-                plot_data[company_id]['營收'].extend([float(company['當月營收'].replace(',', ''))])
+            for company_id, group in groupby(sorted_data, key=lambda x: x['公司代號']):
+                group = list(group)
 
-        for company_id, data in plot_data.items():
-            plt.plot(data['月份'], data['營收'], label=f"{company_id} 平均值")
+                for i, company in enumerate(group):
+                    # 計算每年度的平均值
+                    year = int(company['月份'].split('-')[0])
+                    month = int(company['月份'].split('-')[1])
+                    plot_data[company_id]['月份'].extend([f"{year}-{month:02d}"])
+                    plot_data[company_id]['營收'].extend([float(company['當月營收'].replace(',', ''))])
 
-        plt.xlabel('時間', fontproperties=font1, fontsize=20)
-        plt.ylabel('平均營收', fontproperties=font1, fontsize=20)
-        plt.title('年度營收折線圖', fontproperties=font1, fontsize=20)
-        plt.xticks(rotation=45)  # 旋轉 x 軸標籤，以免重疊
-        plt.legend(prop=font1)
-        plt.grid(True)
-        plt.ticklabel_format(axis='y', style='plain') 
-        plt.tight_layout()  # 自動調整佈局，以確保標籤完全顯示
-        plt.show()
+            for company_id, data in plot_data.items():
+                plt.plot(data['月份'], data['營收'], label=f"{company_id} 平均值")
+
+            plt.xlabel('時間', fontproperties=font1, fontsize=20)
+            plt.ylabel('平均營收', fontproperties=font1, fontsize=20)
+            plt.title('年度營收折線圖', fontproperties=font1, fontsize=20)
+            plt.xticks(rotation=45)  # 旋轉 x 軸標籤，以免重疊
+            plt.legend(prop=font1)
+            plt.grid(True)
+            plt.ticklabel_format(axis='y', style='plain') 
+            plt.tight_layout()  # 自動調整佈局，以確保標籤完全顯示
+            plt.show()
+        else:
+            sg.popup_error('表格無資料，請先點擊「確認」獲取數據。')
+
 
 # Close the window when the event loop exits
 window.close()
