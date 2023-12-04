@@ -121,7 +121,8 @@ layout = [
     [sg.Text('公司代號（以逗號分隔）'), sg.InputText(key='company_ids')],
     [sg.Text('年份範圍（以逗號分隔或使用範圍符號 "-"）'), sg.InputText(key='year_range')],
     [sg.Text('月份範圍（以逗號分隔或使用範圍符號 "-"）'), sg.InputText(key='month_range')],
-    [sg.Button('確認'), sg.Button('生成折線圖', key='plot_button'), sg.Button('離開', key='leave')],
+    [sg.Button('確認'),  sg.Button('離開', key='leave')],
+    [sg.Button('公司折線圖', key='plot_button'),sg.Button('歷年折線圖', key='time_button'),sg.Button('營收增減折線圖', key='rate_button')],
     [sg.Table(values=[], headings=['公司代號', '公司名稱', '當月營收', '上月營收', '去年當月營收', '上月比較增減(%)', '去年同月增減(%)', '月份'],
               auto_size_columns=False, justification='right', key='table',
               col_widths=[15, 30, 15, 15, 15, 20, 20, 15],
@@ -235,6 +236,80 @@ while True:
             plt.show()
         else:
             sg.popup_error('表格無資料，請先點擊「確認」獲取數據。')
+
+
+    elif event == 'time_button':
+        # Get selected company ID
+        selected_company_id = values['company_ids'].split(',')[0].strip()
+
+        # Filter data for the selected company
+        selected_company_data = [company for company in sorted_data if company['公司代號'] == selected_company_id]
+
+        if selected_company_data:
+            plt.figure(figsize=(10, 6))
+
+            # Organize data for plotting
+            years_data = {str(year): {'月份': [], '營收': []} for year in range(year_range[0], year_range[1] + 1)}
+
+            for company in selected_company_data:
+                year = int(company['月份'].split('-')[0])
+                month = int(company['月份'].split('-')[1])
+
+                # Ensure the year key exists in the dictionary
+                if str(year) not in years_data:
+                    years_data[str(year)] = {'月份': [], '營收': []}
+
+                years_data[str(year)]['月份'].append(f"{month:02d}")
+                years_data[str(year)]['營收'].append(float(company['當月營收'].replace(',', '')))
+
+            # Plotting for each year
+            for year, data in years_data.items():
+                plt.plot(data['月份'], data['營收'], label=f"{year} 年")
+            plt.xlabel('月份', fontproperties=font1, fontsize=20)
+            plt.ylabel('營收', fontproperties=font1, fontsize=20)
+            plt.title(f"{selected_company_id} 不同年度營收折線圖", fontproperties=font1, fontsize=20)
+            plt.xticks(rotation=45)
+            plt.legend(prop=font1)
+            plt.grid(True)
+            plt.ticklabel_format(axis='y', style='plain')
+            plt.tight_layout()
+            plt.show()
+ 
+        else:
+            sg.popup_error(f'選擇的公司（ID: {selected_company_id}）無相關數據，請嘗試其他公司。')
+    elif event == 'rate_button':
+        table_data = window['table'].get()
+
+        if table_data and table_data[0]:
+            plt.figure(figsize=(10, 6))
+            plot_data = {company_id: {'月份': [], '營收增減(%)': []} for company_id in company_ids_input}
+
+            for company_id, group in groupby(sorted_data, key=lambda x: x['公司代號']):
+                group = list(group)
+
+                for i, company in enumerate(group):
+                    # 計算每年度的平均值
+                    year = int(company['月份'].split('-')[0])
+                    month = int(company['月份'].split('-')[1])
+                    plot_data[company_id]['月份'].extend([f"{year}-{month:02d}"])
+                    plot_data[company_id]['營收增減(%)'].extend([float(company['上月比較增減(%)'])])
+
+            for company_id, data in plot_data.items():
+                plt.plot(data['月份'], data['營收增減(%)'], label=f"{company_id} 增減(%)")
+
+            plt.xlabel('時間', fontproperties=font1, fontsize=20)
+            plt.ylabel('平均營收', fontproperties=font1, fontsize=20)
+            plt.title('年度營收折線圖', fontproperties=font1, fontsize=20)
+            plt.xticks(rotation=45)  # 旋轉 x 軸標籤，以免重疊
+            plt.legend(prop=font1)
+            plt.grid(True)
+            plt.ticklabel_format(axis='y', style='plain') 
+            plt.tight_layout()  # 自動調整佈局，以確保標籤完全顯示
+            plt.show()
+        else:
+            sg.popup_error('表格無資料，請先點擊「確認」獲取數據。')
+
+     
 
 
 # Close the window when the event loop exits
