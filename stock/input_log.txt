@@ -19,3 +19,9 @@ month_range:1-3
 company_ids:, year_range:111-112, month_range:
 company_ids:2330, year_range:111-112, month_range:1-4
 company_ids:2330, year_range:110-112, month_range:1-4
+year_range:111-112
+month_range:1-3
+company_ids:, year_range:111-112, month_range:
+company_ids:2330, year_range:111-112, month_range:1-4
+company_ids:2330, year_range:110-112, month_range:1-4
+company_ids:2330, year_range:108-112, month_range:1-4
