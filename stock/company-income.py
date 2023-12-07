@@ -155,10 +155,9 @@ while True:
                 window[key].update(value)
     elif event == '確認':
 
-        # Parsing input
         company_ids_input = [company_id.strip() for company_id in values['company_ids'].split(',')]
-        year_range_input = values['year_range'].split(',')
-        month_range_input = values['month_range'].split(',')
+        year_range_input = [values['year_range']]
+        month_range_input = [values['month_range']]
         
 
         # Converting to integers
