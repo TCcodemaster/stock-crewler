@@ -35,7 +35,7 @@ pip install requests beautifulsoup4 prettytable tqdm matplotlib PySimpleGUI
 ## 📋1.取得資料 
 #### 1.解析網頁，著尋目標
 * 想要透過爬蟲得到資訊第一步一定是去分析HTML(網頁結構)，找出你需要資訊的段落，再根據網頁的TAG 做指定，於是就先去分析HTML找出我們感興趣的
-     ![image](https://hackmd.io/_uploads/BygvAvnS6.png)
+    [Markdown Live Preview](https://hackmd.io/_uploads/BygvAvnS6.png)
   
 :::warning
 可以看到我們想要爬取的表格在第三層的TABLE裡面，是屬於巢狀表格的結構
