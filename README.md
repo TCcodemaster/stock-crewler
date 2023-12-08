@@ -194,9 +194,8 @@ def print_results(company_data):
                     print(table_basic)
 ```
 * 只是從網站印出原始資料似乎有點無聊吧，於是我就額外產生每年度的營收平均值透過我們產生的資料
-:::warning
+
 記得要放在```for company_id, group in groupby(sorted_data, key=lambda x: x['公司代號']):``` 迴圈裡面
-:::
 ```python=
             # 計算每年度的平均值
             yearly_data = {year: [] for year in range(year_range[0], year_range[1] + 1)}
@@ -214,27 +213,23 @@ def print_results(company_data):
             table_basic.clear_rows()
 ```
 * 最後，只要在**主程式碼**呼叫函式就可以了
-
 ```python=
 company_data = get_company_data(company_ids_input, year_range, month_range)
  # 印出公司資料
 print_results(company_data)
 ```
-:::success
 input : id(2330)year(111,112)month(1,3)
-:::
-![image](https://hackmd.io/_uploads/SJtQwWk8p.png)
+[image](https://hackmd.io/_uploads/SJtQwWk8p.png)
       
 
 ## 📋3. 包裝成GUI
 * 因為若要時常使用，終端機的介面還是不太適合，所以我採用PySimpleGUI 布局，並將輸入分為三個輸入框:公司代號、年份範圍、月份範圍，同時會有input_log的設定這樣下次進來就會記得上次輸入的組合
 #### 1.介面基礎設計
-:::warning
+
 因為介面都是顯示在PySimpleGUI，所以上面提到 print_results的部分就可以刪除
-:::
+
 * 保存輸入進log以及PySimpleGUI layout
 ```python=
-
 def parse_range(input_range):
     result = []
     for part in input_range:
@@ -288,7 +283,6 @@ window = sg.Window('公司資料查詢工具', layout, resizable=True, finalize=
 ```
 * 主程式事件設定
 ```python=
-# 主循環
 while True:
     event, values = window.read()
 
@@ -357,7 +351,6 @@ while True:
                 if revenues:  # 避免除以零
                     average_revenue = sum(revenues) / len(revenues)
                     table_data.append(["", "", f"{average_revenue:.2f}", "", "", "", "", f"{year}年 平均值"]
-
 ```
 * 介面呈現
 [ ](https://hackmd.io/_uploads/BkyzlBxLp.png)
@@ -380,8 +373,6 @@ while True:
 3. 製作繪圖所需的資料： 創建一個字典 plot_data，用於存儲每家公司的月份和營收數據。
 4. 繪製折線圖： 對於每家公司，將其營收數據加入 plot_data 字典中，然後使用 plt.plot 函式繪製折線圖。
 * 將```'營收'```替換程```'營收增減(%)'```就可以完成營收增減%圖
-:::
-
 ```python=
     elif event == 'plot_button':
         table_data = window['table'].get()
@@ -423,11 +414,11 @@ while True:
 2. 歷年營收比較
 * 這張圖比較不一樣，他是只會看一家公司的數據，但可以在月份的軸上看到多個月的比較，可以去比較同時期去年度的表現，
 * 所以他是透過year_data去分類
-:::info
+
 1. 過濾選擇公司的資料： 從整體資料中篩選出選擇公司的相關資料。
 2. 製作繪圖所需的資料： 創建一個字典 years_data，用於存儲該公司不同年度的月份和營收數據。
 3. 繪製折線圖： 對於每年份，將其營收數據加入 years_data 字典中，然後使用 plt.plot 函式繪製折線圖。
-:::
+   
 ```python
     elif event == 'time_button':
         # Get selected company ID
@@ -472,8 +463,8 @@ while True:
 ```
 
 * **成果!**
-![image](https://hackmd.io/_uploads/HytHKSg8T.png)
+[image](https://hackmd.io/_uploads/HytHKSg8T.png)
 
-:::danger
-折線圖的中文字型要另外下載並引用，不然無法顯示
-:::
+
+!!!折線圖的中文字型要另外下載並引用，不然無法顯示
+
