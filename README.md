@@ -5,7 +5,7 @@
 ## 來源網站
 [公開資訊觀測站 - 臺灣證券交易所](https://mops.twse.com.tw/mops/web/index)
 * 爬取資源 :採用IFRSs後每月營業收入彙總表
-![image](https://hackmd.io/_uploads/ryYGn8nS6.png)
+[image](https://hackmd.io/_uploads/ryYGn8nS6.png)
 
 
 ## 前言
@@ -360,7 +360,7 @@ while True:
 
 ```
 * 介面呈現
-![image](https://hackmd.io/_uploads/BkyzlBxLp.png)
+[ ](https://hackmd.io/_uploads/BkyzlBxLp.png)
 
 #### 2.產生折線圖
 * 表格對於若我同時搜尋多家公司或多個年度，要去比較時其實不太方便，所以我額外產生三個按鈕來產生折線圖，分別是 **不同公司營收圖**、**歷年營收比較** 、**營收增減%圖**
@@ -417,7 +417,7 @@ while True:
 ```
 * **成果!**
 
-![image](https://hackmd.io/_uploads/HJHVYBg86.png)
+[image](https://hackmd.io/_uploads/HJHVYBg86.png)
 
 
 2. 歷年營收比較
