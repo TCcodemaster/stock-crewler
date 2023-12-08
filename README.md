@@ -385,7 +385,6 @@ while True:
                 group = list(group)
 
                 for i, company in enumerate(group):
-                    # 計算每年度的值
                     year = int(company['月份'].split('-')[0])
                     month = int(company['月份'].split('-')[1])
                     plot_data[company_id]['月份'].extend([f"{year}-{month:02d}"])
@@ -397,11 +396,11 @@ while True:
             plt.xlabel('時間', fontproperties=font1, fontsize=20)
             plt.ylabel('營收', fontproperties=font1, fontsize=20)
             plt.title('年度營收折線圖', fontproperties=font1, fontsize=20)
-            plt.xticks(rotation=45)  # 旋轉 x 軸標籤，以免重疊
+            plt.xticks(rotation=45)  
             plt.legend(prop=font1)
             plt.grid(True)
             plt.ticklabel_format(axis='y', style='plain') 
-            plt.tight_layout()  # 自動調整佈局，以確保標籤完全顯示
+            plt.tight_layout()
             plt.show()
         else:
             sg.popup_error('表格無資料，請先點擊「確認」獲取數據。')
